@@ -1,0 +1,71 @@
+<?php
+	function wpdocs_set_html_mail_content_type() {
+	return 'text/html';
+}
+add_filter( 'wp_mail_content_type', 'wpdocs_set_html_mail_content_type' );
+  if ( isset($_POST['submit107']) ) {
+    $upload_dir = wp_upload_dir();
+   
+
+     if ( ! empty( $upload_dir['basedir'] ) ) {
+         $user_dirname = $upload_dir['basedir'].'/cv';
+         if ( ! file_exists( $user_dirname ) ) {
+             wp_mkdir_p( $user_dirname );
+         }
+
+        $filename = wp_unique_filename( $user_dirname, $_FILES['filecv']['name'] );
+        //$filename = '1.jpg';
+        move_uploaded_file($_FILES['filecv']['tmp_name'], $user_dirname .'/'. $filename);
+         // save into database $upload_dir['baseurl'].'/product-images/'.$filename;
+         echo '<script>alert("Your "slider 1" File Has Been Uploaded! ")</script>';
+       // $filexname = $user_dirname .'/'.$filename;
+       $filexname = $upload_dir['baseurl'].'/cv'. '/'  .'/'. $filename;
+
+
+       $jobposition = $_POST['jobposition'];
+        $apname = $_POST['apname'];
+        $mobile = $_POST['mobile'];
+        $email = $_POST['email'];
+
+       
+       
+        
+       
+
+
+$to =  get_theme_mod('careermail'); 
+$headers = ' Mail For a  job Application  For Postion ';
+$subject = $jobposition ;
+$message = $apname;
+
+$message .= $mobile;
+
+$message .=  $email;
+$message .=  $filexname ;
+ 
+//$attachments = $filexname;
+$attachments = array(  $upload_dir['basedir'] . '/cv/'.  $filename );
+require('wp-load.php');
+// send test message using wp_mail function.
+$sent_message = wp_mail( $to, $subject, $message, $headers, $attachments );
+
+
+//display message based on the result.
+if ( $sent_message ) {
+    // The message was sent.
+    echo  '<h1 style="color:white; font-size: 12px; text-align:center;">'. 'Hello!'.'&nbsp;'. '<b style="color: green;">'. $apname. '</b>' .'&nbsp;'. 'We Have Received Your Messgae'.'</h1>' ;
+   
+} else {
+    // The message was not sent.
+    echo 'The message was not sent!';
+}
+
+       
+     }
+     ?>
+
+     <?php 
+     
+ }
+
+?>
